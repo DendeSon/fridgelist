@@ -1,0 +1,29 @@
+{
+    "friedRice": [
+        "rice",
+        "egg",
+        "soySauce",
+        "veggies",
+        "chicken"
+    ],
+    "eggsBacon": [
+        "eggs",
+        "bacon"
+    ],
+    "butterNoodles": [
+        "noodles",
+        "butter",
+        "parmesan"
+    ],
+    "frenchToast": [
+        "bread",
+        "eggs"
+    ],
+    "tacos": [
+        "tortilla",
+        "beef",
+        "lettuce",
+        "sour cream",
+        "cheese"
+    ]
+}
