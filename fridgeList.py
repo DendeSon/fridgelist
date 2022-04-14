@@ -3,7 +3,7 @@
 Personal project to help with fridge/pantry stock, choosing recipes, keeping track of expiry dates, etc...
 
 """
-
+import json
 
 sorry = "Sorry, that input is not recognized."
 bye = "Goodbye!"
@@ -11,7 +11,7 @@ notYet = "This function is not implemented yet."
 
 ###Stock###
 
-currentIngredients = ["milk", "bread", "rice", "butter", "eggs"]
+currentIngredients = []
 snackList = []
 
 ###Recipes###
@@ -36,7 +36,7 @@ dinner = {
 ###Start Function###
 
 def Objective():
-    userInput = input("What would you like to do? ingredients/recipes/exit ").lower()
+    userInput = input("Would you like to access 'ingredients', 'recipes' or 'exit'? ").lower()
     if userInput == "exit":
         Exit()
     elif userInput == "ingredients" or userInput == "i":
@@ -50,107 +50,126 @@ def Objective():
 ###Stop Function###
 
 def Exit():
+    if __name__ == "__main__":
+        save()
     print(bye)
-    global flag
-    flag = False
-    return flag
+
+###File Functions###
+
+def save():
+    print("Saving...")
+    with open("ingredients.json", "w") as f:
+        f.write(json.dumps(currentIngredients, indent=4))
+    with open("breakfast.json", "w") as f:
+        f.write(json.dumps(breakfast, indent=4))
+    with open("lunch.json", "w") as f:
+        f.write(json.dumps(lunch, indent=4))
+    with open("dinner.json", "w") as f:
+        f.write(json.dumps(dinner, indent=4))
+    print("Saved\n")
+
+def load_files():
+    print("Loading...")
+    with open("ingredients.json", "r") as f:
+        global currentIngredients
+        currentIngredients = json.load(f)
+    with open("breakfast.json", "r") as f:
+        global breakfast
+        breakfast = json.load(f)
+    with open("lunch.json", "r") as f:
+        global lunch
+        lunch = json.load(f)
+    with open("dinner.json", "r") as f:
+        global dinner
+        dinner = json.load(f)
+    print("Loaded Files\n")
         
 ###Ingredients Section###
 
 def Ingredient():
-    userIngredientsInput = input("Would you like to 'view', 'add' or 'remove' ingredients? add/remove/list/back/exit ").lower()
-    if userIngredientsInput == "add":
+    userInput = input("Would you like to 'view', 'add' or 'remove' ingredients? back/exit ").lower()
+    if userInput == "add":
         addIngredient()
-    elif userIngredientsInput == "remove":
+    elif userInput == "remove":
         removeIngredient()
-    elif userIngredientsInput == "view":
+    elif userInput == "view":
         print(f"Current List of Ingredients:\n{currentIngredients}")
         Ingredient()
-    elif userIngredientsInput == "back":
+    elif userInput == "back":
         print("Okay,")
         Objective()
-    elif userIngredientsInput == "exit":
+    elif userInput == "exit":
         Exit()
     else:
         print(sorry)
         Ingredient()
 
 def removeIngredient():
-    removeInput = input("What ingredient would you like to remove? input/back ").lower()       
-    if removeInput == "back":
+    print(f"Current Ingredients:\n{currentIngredients}")
+    userInput = input("What ingredient would you like to remove? input/back ").lower()       
+    if userInput == "back":
         print("Okay,")
-        Ingredient()
     else:
         try:
-            currentIngredients.remove(removeInput)
-            print(f"Removed '{removeInput}'!")
+            currentIngredients.remove(userInput)
+            print(f"Removed '{userInput}'!")
         except ValueError:
-            print(f"'{removeInput}' is not in the ingredients lists!")
-        finally:
-            Ingredient()
+            print(f"'{userInput}' is not in the ingredients lists!")
+    Ingredient()
         
 def addIngredient():
-    addInput = input("What ingredient would you like to add? input/back ").lower()
-    if addInput == "back":
+    print(f"Current Ingredients:\n{currentIngredients}")
+    userInput = input("What ingredient would you like to add? input/back ").lower()
+    if userInput == "back":
         print("Okay,")
-        Ingredient()
     else:
-        currentIngredients.append(addInput)
-        print(f"Added '{addInput}'!")
-        Ingredient()
+        currentIngredients.append(userInput)
+        print(f"Added '{userInput}'!")
+    Ingredient()
     # sellByInput = input("Does this ingredient have a 'Sell By' date? ").lower() #Specify format mm/dd/yy
-    # snackInput = input(f"Is '{addInput}' a snack?").lower() 
+    # snackInput = input(f"Is '{userInput}' a snack?").lower() 
     
 ###Recipes Section###  
     
 def Recipes():
-    userRecipeInput = input("Which menu would you like to access? breakfast/lunch/dinner/snacks/add/remove/back/exit ").lower()
-    if userRecipeInput == "breakfast" or userRecipeInput == "b":
-        listOrAvailable = input("Would you like to 'list' the recipes or 'check' if they are available? list/check/back ").lower()
-        if listOrAvailable == "list":
-            recipesList(breakfast)
-            Recipes()
-        elif listOrAvailable == "check":
+    userInput = input("Would you like to access 'breakfast', 'lunch', 'dinner' or 'snacks'? Which menu would you like to access? add/remove/back/exit ").lower()
+    if userInput == "breakfast" or userInput == "b":
+        viewOrCheck = input("Would you like to 'view' the recipes or 'check' if any are available? /back ").lower()
+        if viewOrCheck == "view":
+            recipesList(breakfast, "breakfast")
+        elif viewOrCheck == "check":
             printRecipes(breakfast)
-            Recipes()
-        elif listOrAvailable == "back":
+        elif viewOrCheck == "back":
             print("Okay,")
-            Recipes()
         else:
             print(sorry)
-            Recipes()
-    elif userRecipeInput == "lunch" or userRecipeInput == "l":
-        listOrAvailable = input("Would you like to 'list' the recipes or 'check' if they are available? list/check/back ").lower()
-        if listOrAvailable == "list":
-            recipesList(lunch)
-            Recipes()
-        elif listOrAvailable == "check":
+        Recipes()
+    elif userInput == "lunch" or userInput == "l":
+        viewOrCheck = input("Would you like to 'view' the recipes or 'check' if any are available? /back ").lower()
+        if viewOrCheck == "view":
+            recipesList(lunch, "lunch")
+        elif viewOrCheck == "check":
             printRecipes(lunch)
-            Recipes()
-        elif listOrAvailable == "back":
+        elif viewOrCheck == "back":
             print("Okay,")
-            Recipes()
         else:
             print(sorry)
-            Recipes()        
-    elif userRecipeInput == "dinner" or userRecipeInput == "d":
-        listOrAvailable = input("Would you like to 'list' the recipes or 'check' if they are available? list/check/back ").lower()
-        if listOrAvailable == "list":
-            recipesList(dinner)
-            Recipes()
-        elif listOrAvailable == "check":
+        Recipes()     
+    elif userInput == "dinner" or userInput == "d":
+        viewOrCheck = input("Would you like to 'view' the recipes or 'check' if any are available? /back ").lower()
+        if viewOrCheck == "view":
+            recipesList(dinner, "dinner")
+        elif viewOrCheck == "check":
             printRecipes(dinner)
-            Recipes()
-        elif listOrAvailable == "back":
+        elif viewOrCheck == "back":
             print("Okay,")
-            Recipes()
         else:
             print(sorry)
-            Recipes()
-    elif userRecipeInput == "snacks" or userRecipeInput == "s":
+        Recipes()
+    elif userInput == "snacks" or userInput == "s":
         snacks()
-    elif userRecipeInput == "add":
-        addRecipeInput = input("Which meal would you like to add a recipe to? breakfast/lunch/dinner/back ").lower()
+    elif userInput == "add":
+        addRecipeInput = input("Would you like to add a recipe to 'breakfast', 'lunch' or 'dinner'? /back ").lower()
         if addRecipeInput == "breakfast" or addRecipeInput == "b":
             addRecipe(breakfast)
         elif addRecipeInput == "lunch" or addRecipeInput == "l":
@@ -163,8 +182,8 @@ def Recipes():
         else:
             print(sorry)
             Recipes()
-    elif userRecipeInput == "remove":
-        meal = input("Which meal would you like to remove a recipe from? breakfast/lunch/dinner/back ").lower()
+    elif userInput == "remove":
+        meal = input("Would you like to remove a recipe from 'breakfast', 'lunch' or 'dinner'? /back ").lower()
         if meal == "breakfast" or meal == "b":
             removeRecipe(breakfast)
         elif meal == "lunch" or meal == "l":
@@ -177,20 +196,21 @@ def Recipes():
         else:
             print(sorry)
             Recipes()
-    elif userRecipeInput == "back":
+    elif userInput == "back":
         print("Okay,")
         Objective()
-    elif userRecipeInput == "exit":
+    elif userInput == "exit":
         Exit()
     else:
         print(sorry)
         Recipes()
     
-
-def recipesList(meal):
-    for k, v in meal.items():
-        print(k, v)
-    Recipes()
+def recipesList(meal,mealAsString = "meal"):
+    if not meal:
+        print("No recipes are available for " + mealAsString)
+    else:
+        for k, v in meal.items():
+            print(k, v)
 
 def snacks():
     print(notYet)
@@ -207,7 +227,6 @@ def addRecipe(meal):
             break
         elif recipeIngredients == "back":
             print("Okay,")
-            Recipes()
             break
         else:
             tempIngredients.append(recipeIngredients)
@@ -221,13 +240,12 @@ def removeRecipe(meal):
     recipeInput = input("Which recipe would you like to remove? input/back ").lower()
     if recipeInput == "back":
         print("Okay,")
-        Recipes()
     else:
         try:
             del meal[recipeInput]
-            print(f"Removed {recipeInput}")
+            print(f"Removed '{recipeInput}'")
         except KeyError:
-            print(f"{recipeInput} is not in the recipes list!")
+            print(f"'{recipeInput}' is not in the recipes list!")
     Recipes()
 
 def scanRecipes(meal):
@@ -238,14 +256,14 @@ def scanRecipes(meal):
     
 def printRecipes(meal):
     print("Recipes with in stock ingredients:")
-    for r, i in scanRecipes(meal).items():
-        print(f"{r} with {i}")
+    if not scanRecipes(meal):
+        print("No recipes available to make!")
+    else:
+        for r, i in scanRecipes(meal).items():
+            print(f"{r} with {i}")
     
-            
-    
-###Program Loop###
+###Script Start###
 
-flag = True
-
-while flag:
+if __name__ == "__main__":
+    load_files()
     Objective()
