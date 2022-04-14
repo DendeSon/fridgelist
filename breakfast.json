@@ -1,0 +1,18 @@
+{
+    "cerealBowl": [
+        "milk",
+        "cereal"
+    ],
+    "toast": [
+        "bread",
+        "butter"
+    ],
+    "eggsBacon": [
+        "eggs",
+        "bacon"
+    ],
+    "frenchToast": [
+        "bread",
+        "eggs"
+    ]
+}
